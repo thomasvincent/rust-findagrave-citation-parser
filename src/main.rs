@@ -47,31 +47,26 @@ fn parse_page(html: &str) -> Result<Memorial, Box<dyn Error>> {
     let document = Html::parse_document(html);
     let mut memorial = Memorial::new();
 
-    // Define selectors
-    let selectors = [
-        (Selector::parse("[itemprop='name'], h1.name, .bio-info .full-name").unwrap(), 
-         |m: &mut Memorial, v: String| m.name = v),
+    let selectors: Vec<(Selector, Box<dyn FnMut(&mut Memorial, String)>)> = vec![
+        (Selector::parse("[itemprop='name'], h1.name, .bio-info .full-name").unwrap(),
+         Box::new(|m: &mut Memorial, v: String| m.name = v)),
         (Selector::parse("[itemprop='birthDate'], .birth-info .date").unwrap(),
-         |m: &mut Memorial, v: String| m.birth_date = Some(v)),
+         Box::new(|m: &mut Memorial, v: String| m.birth_date = Some(v))),
         (Selector::parse("[itemprop='birthPlace'], .birth-info .location").unwrap(),
-         |m: &mut Memorial, v: String| m.birth_location = Some(v)),
+         Box::new(|m: &mut Memorial, v: String| m.birth_location = Some(v))),
         (Selector::parse("[itemprop='deathDate'], .death-info .date").unwrap(),
-         |m: &mut Memorial, v: String| m.death_date = Some(v)),
+         Box::new(|m: &mut Memorial, v: String| m.death_date = Some(v))),
         (Selector::parse("[itemprop='deathPlace'], .death-info .location").unwrap(),
-         |m: &mut Memorial, v: String| m.death_location = Some(v)),
+         Box::new(|m: &mut Memorial, v: String| m.death_location = Some(v))),
         (Selector::parse("[itemprop='burialPlace'], .burial-info .location").unwrap(),
-         |m: &mut Memorial, v: String| m.burial_location = Some(v)),
+         Box::new(|m: &mut Memorial, v: String| m.burial_location = Some(v))),
         (Selector::parse(".plot-details, .grave-location").unwrap(),
-         |m: &mut Memorial, v: String| m.plot_details = Some(v))
+         Box::new(|m: &mut Memorial, v: String| m.plot_details = Some(v))),
     ];
 
-    for (selector, setter) in selectors.iter() {
-        if let Some(element) = document.select(selector).next() {
-            let text = element.text()
-                .collect::<Vec<_>>()
-                .join(" ")
-                .trim()
-                .to_string();
+    for (selector, mut setter) in selectors {
+        if let Some(element) = document.select(&selector).next() {
+            let text = element.text().collect::<Vec<_>>().join(" ").trim().to_string();
             if !text.is_empty() {
                 setter(&mut memorial, text);
             }
@@ -81,7 +76,7 @@ fn parse_page(html: &str) -> Result<Memorial, Box<dyn Error>> {
     Ok(memorial)
 }
 
-fn store_in_db(memorial: &Memorial, conn: &Connection) -> Result<()> {
+fn store_in_db(memorial: &Memorial, conn: &mut Connection) -> Result<()> {
     conn.execute_batch("
         PRAGMA foreign_keys = ON;
         PRAGMA journal_mode = WAL;
@@ -135,8 +130,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     println!("Parsed Memorial: {:?}", memorial);
 
     // Store in database
-    let conn = Connection::open("memorials.db")?;
-    store_in_db(&memorial, &conn)?;
+    let mut conn = Connection::open("memorials.db")?;
+    store_in_db(&memorial, &mut conn)?;
 
     println!("Memorial data successfully stored in database");
     Ok(())
