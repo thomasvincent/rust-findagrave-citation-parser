@@ -1,4 +1,3 @@
-````markdown
 # Find a Grave Citation Parser
 
 This is a Rust program that fetches and parses citation information from the Find a Grave website. It extracts key details such as name, birth date, death date, burial location, and more. The extracted data can be displayed in the console and optionally stored in a SQLite database for later use.
@@ -41,7 +40,6 @@ These dependencies are managed through `Cargo.toml` (see below).
 git clone https://github.com/your-username/find-a-grave-citation-parser.git
 cd find-a-grave-citation-parser
 ```
-````
 
 ### 2. Install dependencies
 
