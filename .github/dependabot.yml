@@ -4,53 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Los_Angeles"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
     open-pull-requests-limit: 10
-    allow:
-      - dependency-type: "direct"
-      - dependency-type: "indirect"
-    versioning-strategy: "auto"
+    reviewers:
+      - "thomasvincent"
     labels:
       - "dependencies"
       - "rust"
-    reviewers:
-      - "repo-owner"
-    commit-message:
-      prefix: "cargo"
-      include: "scope"
-
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Los_Angeles"
-    labels:
-      - "dependencies"
-      - "github-actions"
-    commit-message:
-      prefix: "ci"
-      include: "scope"
-
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Los_Angeles"
-    labels:
-      - "dependencies"
-      - "docker"
-    commit-message:
-      prefix: "docker"
-      include: "scope"
-
-security-updates:
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "daily"
+    rebase-strategy: "auto"
