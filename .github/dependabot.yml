@@ -4,11 +4,29 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+  
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "thomasvincent"
+    reviewers:
+      - "thomasvincent"
+    labels:
+      - "dependencies"
+      - "ci"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"
+      include: "scope"
     commit-message:
       prefix: "deps"
       include: "scope"
     open-pull-requests-limit: 10
     reviewers:
+      - "thomasvincent"
+    assignees:
       - "thomasvincent"
     labels:
       - "dependencies"
