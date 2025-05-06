@@ -1,23 +1,43 @@
 [package]
-name = "find-a-grave-citation-parser"
+name = "findagrave-citation-parser"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
-description = "A Rust program that fetches and parses citation information from the Find a Grave website."
+authors = ["Thomas Vincent"]
+description = "A Rust program that fetches and parses citation information from the Find a Grave website"
 license = "MIT"
-repository = "https://github.com/your-username/find-a-grave-citation-parser"
+repository = "https://github.com/thomasvincent/rust-findagrave-citation-parser"
+documentation = "https://thomasvincent.github.io/rust-findagrave-citation-parser/"
+readme = "README.md"
+keywords = ["genealogy", "parser", "citation", "findagrave", "scraper"]
+categories = ["command-line-utilities", "web-programming"]
+rust-version = "1.70.0"
+
+[badges]
+maintenance = { status = "actively-developed" }
 
 [dependencies]
-reqwest = { version = "0.11", features = ["blocking", "json"] }
-scraper = "0.14"
-sqlite = "0.26"
+reqwest = { version = "0.11", features = ["json"] }
+scraper = "0.17"
+rusqlite = { version = "0.29", features = ["bundled"] }
+tokio = { version = "1.28", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 log = "0.4"
 env_logger = "0.10"
+thiserror = "1.0"
+anyhow = "1.0"
+clap = { version = "4.3", features = ["derive"] }
+chrono = "0.4"
+
+[dev-dependencies]
+mockito = "1.1"
+tempfile = "3.7"
+tokio-test = "0.4"
 
 [features]
-default = ["sqlite-support"]
+default = ["sqlite"]
+sqlite = []
 
-[build-dependencies]
-tokio = { version = "1", features = ["full"] }
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
